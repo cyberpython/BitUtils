@@ -1,0 +1,64 @@
+<project name="BitUtils" default="dist" basedir=".">
+
+    <description>
+        Builds a jar library for BitUtils
+    </description>
+
+  <property name="src.dir" location="src"/>
+  <property name="build.dir" location="build"/>
+  <property name="dist.dir"  location="dist"/>
+  <property name="doc.dir"  location="doc"/>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+  </target>
+
+  <target name="genarate-doc">
+    <mkdir dir="${doc.dir}"/>
+    <javadoc sourcepath="src"
+             destdir="${doc.dir}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="JXMapviewer2 Documentation" />
+  </target>
+
+  <target name="compile" depends="init" description="compile the source ">
+    <javac srcdir="${src.dir}" destdir="${build.dir}" />
+  </target>
+
+  <target name="dist" depends="compile,genarate-doc,src-dist,doc-dist" description="generate the distribution" >
+    <mkdir dir="${dist.dir}"/>
+    <jar jarfile="${dist.dir}/BitUtils.jar">
+      <fileset dir="${build.dir}"/>
+      <fileset file="LICENSE"/>
+      <fileset file="README"/>
+    </jar>
+  </target>
+
+  <target name="src-dist" description="generate the source distribution jar file" >
+    <mkdir dir="${dist.dir}"/>
+    <jar jarfile="${dist.dir}/BitUtils-source.jar">
+      <fileset dir="${src.dir}"/>
+      <fileset file="LICENSE"/>
+      <fileset file="README"/>
+    </jar>
+  </target>
+
+  <target name="doc-dist" description="generate the javadoc distribution jar file" >
+    <mkdir dir="${dist.dir}"/>
+    <jar jarfile="${dist.dir}/BitUtils-doc.jar">
+      <fileset dir="${doc.dir}"/>
+      <fileset file="LICENSE"/>
+      <fileset file="README"/>
+    </jar>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+    <delete dir="${doc.dir}"/>
+  </target>
+
+</project>
+
