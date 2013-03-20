@@ -27,7 +27,10 @@
     <javac srcdir="${src.dir}" destdir="${build.dir}" />
   </target>
 
-  <target name="dist" depends="compile,genarate-doc,src-dist,doc-dist" description="generate the distribution" >
+  <target name="dist" depends="jar,src-dist,doc-dist" description="generate the distribution" >
+  </target>
+  
+  <target name="jar" depends="compile" description="generate the distribution" >
     <mkdir dir="${dist.dir}"/>
     <jar jarfile="${dist.dir}/BitUtils.jar">
       <fileset dir="${build.dir}"/>
@@ -45,7 +48,7 @@
     </jar>
   </target>
 
-  <target name="doc-dist" description="generate the javadoc distribution jar file" >
+  <target name="doc-dist" depends="genarate-doc" description="generate the javadoc distribution jar file" >
     <mkdir dir="${dist.dir}"/>
     <jar jarfile="${dist.dir}/BitUtils-doc.jar">
       <fileset dir="${doc.dir}"/>
