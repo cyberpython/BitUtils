@@ -173,6 +173,10 @@ public class BitUtilsTest {
         byte[] expResult14 = {(byte)0x99, (byte)0x43, (byte)0xBA};
         byte[] result14 = BitUtils.extract(b2, 0, 24);
         assertArrayEquals(expResult14, result14);
+        
+        byte[] expResult15 = {(byte)0x16, (byte)0xC3};
+        byte[] result15 = BitUtils.extract(b, 4, 15);
+        assertArrayEquals(expResult15, result15);
     }
     
     @Test(expected=IllegalArgumentException.class)
