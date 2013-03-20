@@ -30,6 +30,72 @@ import java.io.PrintStream;
  * @author Georgios Migdos <cyberpython@gmail.com>
  */
 public class BitUtils {
+    
+    /**
+     * Converts a byte array of 1-8 bytes to a long.
+     * 
+     * @param b the byte array to use
+     * 
+     * @return a long having the same value as the byte array. The long value's 
+     * most significant bit is the leftmost bit of the array's first byte (b[0])
+     * 
+     * @throws IllegalArgumentException if the byte array has a length of 0 or 
+     *                                  greater than 8.
+     */
+    public static long toLong(byte[] b){
+        if((b.length < 1) || (b.length>8)){
+            throw new IllegalArgumentException("Array of size "+b.length+" cannot be converted to long.");
+        }
+        long result = 0L;
+        for(int i=0; i<b.length; i++){
+            result = ( (0xFFL & b[i]) << ((b.length-i-1)*8) ) | result;
+        }
+        return result;
+    }
+    
+    /**
+     * Converts a byte array of 1-4 bytes to an int.
+     * 
+     * @param b the byte array to use
+     * 
+     * @return an int having the same value as the byte array. The integer value's 
+     * most significant bit is the leftmost bit of the array's first byte (b[0])
+     * 
+     * @throws IllegalArgumentException if the byte array has a length of 0 or 
+     *                                  greater than 4.
+     */
+    public static long toInt(byte[] b){
+        if((b.length < 1) || (b.length>4)){
+            throw new IllegalArgumentException("Array of size "+b.length+" cannot be converted to int.");
+        }
+        int result = 0;
+        for(int i=0; i<b.length; i++){
+            result = ( (0xFF & b[i]) << ((b.length-i-1)*8) ) | result;
+        }
+        return result;
+    }
+    
+    /**
+     * Converts a byte array of 1-2 bytes to a short.
+     * 
+     * @param b the byte array to use
+     * 
+     * @return a short having the same value as the byte array. The short value's 
+     * most significant bit is the leftmost bit of the array's first byte (b[0])
+     * 
+     * @throws IllegalArgumentException if the byte array has a length of 0 or 
+     *                                  greater than 2.
+     */
+    public static long toShort(byte[] b){
+        if((b.length < 1) || (b.length>2)){
+            throw new IllegalArgumentException("Array of size "+b.length+" cannot be converted to short.");
+        }
+        int result = 0;
+        for(int i=0; i<b.length; i++){
+            result = ( (0xFF & b[i]) << ((b.length-i-1)*8) ) | result;
+        }
+        return result;
+    }
 
     /**
      * Converts a byte array to its 8-bit byte binary representation. Bytes are

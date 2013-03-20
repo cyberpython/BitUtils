@@ -24,8 +24,7 @@
 package com.gmigdos.bitutils;
 
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -33,6 +32,92 @@ import org.junit.Test;
  * @author Georgios Migdos <cyberpython@gmail.com>
  */
 public class BitUtilsTest {
+    
+    /**
+     * Test of toLong method, of class BitUtils.
+     */
+    @Test
+    public void testToLong(){
+        byte[] bytes = {(byte)0xFF};
+        assertEquals(0xFFL, BitUtils.toLong(bytes));
+        byte[] bytes2 = {(byte)0xFF, (byte)0x63};
+        assertEquals(0xFF63L, BitUtils.toLong(bytes2));
+        byte[] bytes3 = {(byte)0xFF, (byte)0x63, (byte)0x00};
+        assertEquals(0xFF6300L, BitUtils.toLong(bytes3));
+        byte[] bytes4 = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32};
+        assertEquals(0xFF630032L, BitUtils.toLong(bytes4));
+        byte[] bytes5 = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52};
+        assertEquals(0xFF63003252L, BitUtils.toLong(bytes5));
+        byte[] bytes6 = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52, (byte)0xA3};
+        assertEquals(0xFF63003252A3L, BitUtils.toLong(bytes6));
+        byte[] bytes7 = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52, (byte)0xA3, (byte)0x6D};
+        assertEquals(0xFF63003252A36DL, BitUtils.toLong(bytes7));
+        byte[] bytes8 = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52, (byte)0xA3, (byte)0x6D, (byte)0x4C};
+        assertEquals(0xFF63003252A36D4CL, BitUtils.toLong(bytes8));
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testToLongZeroLengthArray(){
+        byte[] b = {};
+        BitUtils.toLong(b);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testToLongLargeArray(){
+        byte[] b = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52, (byte)0xA3, (byte)0x6D, (byte)0x4C, (byte)0x1B};
+        BitUtils.toLong(b);
+    }
+    
+    /**
+     * Test of toInt method, of class BitUtils.
+     */
+    @Test
+    public void testToInt(){
+        byte[] bytes = {(byte)0xFF};
+        assertEquals(0xFF, BitUtils.toInt(bytes));
+        byte[] bytes2 = {(byte)0xFF, (byte)0x63};
+        assertEquals(0xFF63, BitUtils.toInt(bytes2));
+        byte[] bytes3 = {(byte)0xFF, (byte)0x63, (byte)0x00};
+        assertEquals(0xFF6300, BitUtils.toInt(bytes3));
+        byte[] bytes4 = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32};
+        assertEquals(0xFF630032, BitUtils.toInt(bytes4));
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testToIntZeroLengthArray(){
+        byte[] b = {};
+        BitUtils.toInt(b);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testToIntLargeArray(){
+        byte[] b = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52, (byte)0xA3};
+        BitUtils.toInt(b);
+    }
+    
+    /**
+     * Test of toShort method, of class BitUtils.
+     */
+    @Test
+    public void testToShort(){
+        byte[] bytes = {(byte)0xFF};
+        assertEquals(0xFF, BitUtils.toShort(bytes));
+        byte[] bytes2 = {(byte)0xFF, (byte)0x63};
+        assertEquals(0xFF63, BitUtils.toShort(bytes2));
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testToShortZeroLengthArray(){
+        byte[] b = {};
+        BitUtils.toShort(b);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testToShortLargeArray(){
+        byte[] b = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52, (byte)0xA3};
+        BitUtils.toShort(b);
+    }
+    
     /**
      * Test of bytesToBinaryString method, of class BitUtils.
      */
