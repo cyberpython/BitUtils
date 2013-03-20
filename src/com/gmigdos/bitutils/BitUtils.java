@@ -206,13 +206,9 @@ public class BitUtils {
         int numOfBitsToShiftBy = index % 8;
         int numOfBitsToLeftShiftBy = 8 - numOfBitsToShiftBy;
         int numOfSpanningBits = numOfBits % 8;
-        int numOfBytes = (numOfBits / 8);
+        int numOfBytes = (numOfBits / 8) + (numOfBits%8>0?1:0);
 
         if (numOfBitsToShiftBy > 0) {
-            numOfBytes++;
-            if (numOfSpanningBits - 1 > numOfBitsToLeftShiftBy) {
-                numOfBytes++;
-            }
             result = new byte[numOfBytes];
             int offset = src.length - (index / 8) - 1;
             int shiftMask = (0xFF >>> numOfBitsToLeftShiftBy);
@@ -232,14 +228,11 @@ public class BitUtils {
 
         } else {
             int mask = (numOfSpanningBits == 0 ? 0xFF : (0xFF >>> (8 - numOfSpanningBits)));
-            if (numOfSpanningBits > 0) {
-                numOfBytes++;
-            }
             result = new byte[numOfBytes];
             System.arraycopy(src, src.length - index / 8 - numOfBytes, result, 0, numOfBytes);
             result[0] = (byte) (result[0] & mask);
         }
         return result;
     }
-    
+       
 }
