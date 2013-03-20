@@ -20,7 +20,7 @@
              author="true"
              version="true"
              use="true"
-             windowtitle="JXMapviewer2 Documentation" />
+             windowtitle="BitUtils Documentation" />
   </target>
 
   <target name="compile" depends="init" description="compile the source ">
