@@ -96,6 +96,51 @@ public class BitUtils {
         }
         return result;
     }
+    
+    /**
+     * Converts a long value to a byte array.
+     * The most significant bit is the leftmost bit of the first element of the
+     * array.
+     * 
+     * @param value the value to convert to a byte array
+     * 
+     * @return a byte array of size 8
+     */
+    public static byte[] fromLong(long value){
+        byte[] result =  { (byte)(0xFFL & (value>>>56)), (byte)(0xFFL & (value>>>48)), (byte)(0xFFL & (value>>>40)),
+                           (byte)(0xFFL & (value>>>32)), (byte)(0xFFL & (value>>>24)), (byte)(0xFFL & (value>>>16)),
+                           (byte)(0xFFL & (value>>>8)), (byte)(0xFFL & value)};
+        return result;
+    }
+    
+    /**
+     * Converts an integer value to a byte array.
+     * The most significant bit is the leftmost bit of the first element of the
+     * array.
+     * 
+     * @param value the value to convert to a byte array
+     * 
+     * @return a byte array of size 4
+     */
+    public static byte[] fromInt(int value){
+        byte[] result =  { (byte)(0xFF & (value>>>24)), (byte)(0xFF & (value>>>16)),
+                           (byte)(0xFF & (value>>>8)), (byte)(0xFF & value)};
+        return result;
+    }
+    
+    /**
+     * Converts a short value to a byte array.
+     * The most significant bit is the leftmost bit of the first element of the
+     * array.
+     * 
+     * @param value the value to convert to a byte array
+     * 
+     * @return a byte array of size 2
+     */
+    public static byte[] fromShort(short value){
+        byte[] result =  { (byte)(0xFF & (value>>>8)), (byte)(0xFF & value)};
+        return result;
+    }
 
     /**
      * Converts a byte array to its 8-bit byte binary representation. Bytes are

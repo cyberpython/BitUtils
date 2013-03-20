@@ -119,6 +119,33 @@ public class BitUtilsTest {
     }
     
     /**
+     * Test of fromLong method, of class BitUtils.
+     */
+    @Test()
+    public void testFromLong(){
+        byte[] b = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32, (byte)0x52, (byte)0xA3, (byte)0x6D, (byte)0x4C};
+        assertArrayEquals(b, BitUtils.fromLong(0xFF63003252A36D4CL));
+    }
+    
+    /**
+     * Test of fromInt method, of class BitUtils.
+     */
+    @Test()
+    public void testFromInt(){
+        byte[] b = {(byte)0xFF, (byte)0x63, (byte)0x00, (byte)0x32};
+        assertArrayEquals(b, BitUtils.fromInt(0xFF630032));
+    }
+    
+    /**
+     * Test of fromShort method, of class BitUtils.
+     */
+    @Test()
+    public void testFromShort(){
+        byte[] b = {(byte)0xFF, (byte)0x63};
+        assertArrayEquals(b, BitUtils.fromShort((short)0xFF63));
+    }
+    
+    /**
      * Test of bytesToBinaryString method, of class BitUtils.
      */
     @Test
