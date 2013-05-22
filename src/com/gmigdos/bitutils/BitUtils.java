@@ -272,7 +272,7 @@ public class BitUtils {
         b[byteOffset] = (byte) (0xFF & (b[byteOffset] & mask));
         return b;
     }
-
+    
     /**
      * Extracts the given number of bits starting at the given bit index.
      * The result is returned as a byte array left-padded with 0s as needed.
@@ -297,17 +297,50 @@ public class BitUtils {
      */
     public static byte[] extract(byte[] src, int index, int numOfBits)
             throws IllegalArgumentException, IndexOutOfBoundsException {
+        return extract(src, 0, src.length, index, numOfBits);
+    }
+
+    /**
+     * Extracts the given number of bits starting at the given bit index.
+     * The result is returned as a byte array left-padded with 0s as needed.
+     * The index is calculated from right to left - i.e. the least significant 
+     * bit is considered to be the rightmost (index = 0), while the most 
+     * significant bit is considered  to be the leftmost (index = b.length*8 -1)
+     * if the whole sub-array is treated as a series of consecutive bits.
+     * The portion of the array to be used is determined by the startFrom and 
+     * endAt byte indexes.
+     * 
+     * @param src the original byte array
+     * @param startFrom the array index the sub-array starts at
+     * @param endBefore the array index the sub-array ends before
+     * @param index the first bit to extract
+     * @param numOfBits the number of bits to extract
+     * 
+     * @return a byte array containing the extracted bits
+     * 
+     * @throws IllegalArgumentException if the starting bit index is lower than 
+     *                                  0 or larger than the source byte arrays 
+     *                                  bit count. Also, if the number of bits
+     *                                  to extract is lower or equal to 0 or
+     *                                  when added to the starting index exceeds
+     *                                  the source byte array's bit count.
+     * 
+     */
+    public static byte[] extract(byte[] src, int startFrom, int endBefore, int index, int numOfBits)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+        
+        int subArrayLength = Math.abs(endBefore - startFrom);
 
         if (numOfBits <= 0) {
             throw new IllegalArgumentException("The number of bits cannot be "
                     + "negative or zero. Given: " + numOfBits);
         }
-        if ((index < 0) || (index > src.length * 8 - 1)) {
+        if ((index < 0) || (index > subArrayLength * 8 - 1)) {
             throw new IllegalArgumentException("The starting bit cannot be "
-                    + "negative or larger than " + (src.length * 8 - 1)
+                    + "negative or larger than " + (subArrayLength * 8 - 1)
                     + ". Given: " + index);
         }
-        if (index+numOfBits>src.length*8) {
+        if (index+numOfBits>subArrayLength*8) {
             throw new IllegalArgumentException("Invalid number of bits: "
                     + numOfBits);
         }
@@ -321,7 +354,7 @@ public class BitUtils {
 
         if (numOfBitsToShiftBy > 0) {
             result = new byte[numOfBytes];
-            int offset = src.length - (index / 8) - 1;
+            int offset = endBefore - (index / 8) - 1;
             int shiftMask = (0xFF >>> numOfBitsToLeftShiftBy);
             int resultIndex;
             int srcIndex;
@@ -340,7 +373,7 @@ public class BitUtils {
         } else {
             int mask = (numOfSpanningBits == 0 ? 0xFF : (0xFF >>> (8 - numOfSpanningBits)));
             result = new byte[numOfBytes];
-            System.arraycopy(src, src.length - index / 8 - numOfBytes, result, 0, numOfBytes);
+            System.arraycopy(src, endBefore - index / 8 - numOfBytes, result, 0, numOfBytes);
             result[0] = (byte) (result[0] & mask);
         }
         return result;
