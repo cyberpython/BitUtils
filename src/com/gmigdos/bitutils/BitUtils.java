@@ -92,7 +92,7 @@ public class BitUtils {
         }
         short result = 0;
         for(int i=0; i<b.length; i++){
-            result = ( (0xFF & b[i]) << ((b.length-i-1)*8) ) | result;
+            result = (short)(( (0xFF & b[i]) << ((b.length-i-1)*8) ) | result);
         }
         return result;
     }
