@@ -64,7 +64,7 @@ public class BitUtils {
      * @throws IllegalArgumentException if the byte array has a length of 0 or 
      *                                  greater than 4.
      */
-    public static long toInt(byte[] b){
+    public static int toInt(byte[] b){
         if((b.length < 1) || (b.length>4)){
             throw new IllegalArgumentException("Array of size "+b.length+" cannot be converted to int.");
         }
@@ -86,11 +86,11 @@ public class BitUtils {
      * @throws IllegalArgumentException if the byte array has a length of 0 or 
      *                                  greater than 2.
      */
-    public static long toShort(byte[] b){
+    public static short toShort(byte[] b){
         if((b.length < 1) || (b.length>2)){
             throw new IllegalArgumentException("Array of size "+b.length+" cannot be converted to short.");
         }
-        int result = 0;
+        short result = 0;
         for(int i=0; i<b.length; i++){
             result = ( (0xFF & b[i]) << ((b.length-i-1)*8) ) | result;
         }
