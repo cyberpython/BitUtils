@@ -103,7 +103,7 @@ public class BitUtilsTest {
         byte[] bytes = {(byte)0xFF};
         assertEquals(0xFF, BitUtils.toShort(bytes));
         byte[] bytes2 = {(byte)0xFF, (byte)0x63};
-        assertEquals(0xFF63, BitUtils.toShort(bytes2));
+        assertEquals((short)0xFF63, BitUtils.toShort(bytes2));
     }
     
     @Test(expected=IllegalArgumentException.class)
