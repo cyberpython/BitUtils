@@ -24,6 +24,7 @@
 package com.gmigdos.bitutils;
 
 import java.io.PrintStream;
+import java.nio.ByteBuffer;
 
 /**
  *
@@ -550,5 +551,217 @@ public class BitUtils {
         }
         return b;
     }
-       
+    
+    
+    /**
+     * Extracts the given number of bits starting at the given bit index.
+     * The result is returned as a long value. Up to 64 bits can be extracted.
+     * The index is calculated from right to left - i.e. the least significant 
+     * bit is considered to be the rightmost (index = 0), while the most 
+     * significant bit is considered  to be the leftmost (index = b.length*8 -1)
+     * if the whole sub-array is treated as a series of consecutive bits.
+     * The portion of the array to be used is determined by the offset and 
+     * len values.
+     * 
+     * @param src the original byte array
+     * @param offset the array index the sub-array starts at
+     * @param len the number of bytes to use (starting at offset)
+     * @param startBit the index of the first bit to extract
+     * @param numOfBits the number of bits to extract
+     * 
+     * @return a long value representing the extracted bits
+     * 
+     * @throws IllegalArgumentException if the starting bit index is lower than 
+     *                                  0 or larger than the source byte arrays 
+     *                                  bit count. Also, if the number of bits
+     *                                  to extract is lower or equal to 0 or
+     *                                  when added to the starting index exceeds
+     *                                  the source byte array's bit count.
+     * 
+     */
+    public static long readUnsigned(byte[] src, int offset, int len, int startBit, int numOfBits)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+        
+        if (numOfBits > 64) {
+            throw new IllegalArgumentException("The number of bits cannot be "
+                    + "greater than 64. Given: " + numOfBits);
+        }
+        
+        byte[] bits = extract(src, offset, offset+len, startBit, numOfBits);
+
+        long result = 0L;
+        
+        result = result + (0x00000000000000FFL & bits[bits.length-1]);
+        
+        if(bits.length > 1){
+        	result = result + (0x000000000000FF00L &  (bits[bits.length-2] << 8));
+        }
+        
+        if(bits.length > 2){
+        	result = result + (0x0000000000FF0000L & (bits[bits.length-3] << 16));
+        }
+        
+        if(bits.length > 3){
+        	result = result + (0x00000000FF000000L & (bits[bits.length-4] << 24));
+        }
+        
+        if(bits.length > 4){
+        	result = result + (0x00000000FF000000L & (bits[bits.length-5] << 32));
+        }
+        
+        if(bits.length > 5){
+        	result = result + (0x00000000FF000000L & (bits[bits.length-6] << 40));
+        }
+        
+        if(bits.length > 6){
+        	result = result + (0x00000000FF000000L & (bits[bits.length-7] << 48));
+        }
+        
+        if(bits.length > 7){
+        	result = result + (0x00000000FF000000L & (bits[bits.length-8] << 56));
+        }
+        
+        return result;
+    }
+    
+    public static long readUnsigned(byte[] src, int startBit, int numOfBits)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+    	return readUnsigned(src, 0, src.length, startBit, numOfBits);
+    }
+    
+    public static long readUnsigned(ByteBuffer src, int len, int startBit, int numOfBits)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+    	return readUnsigned(src.array(), src.position(), len, startBit, numOfBits);
+    }
+    
+    /**
+     * Checks if the bit a the specified index of b is set to 1. 
+     * The index is calculated from right to left - i.e. the least significant 
+     * bit is considered to be the rightmost (index = 0), while the most 
+     * significant bit is considered to be the leftmost (index = b.length*8 -1) 
+     * if the whole sub-array is treated as a series of consecutive bits.
+     * The sub-array is considered to start at the index given by offset and
+     * extend to offset + len. 
+     * 
+     * @param b the byte array
+     * @param offset the index of the sub-array start
+     * @param len the length pf the sub-array
+     * @param index the index of the bit to check
+     *
+     * @return true if the bit is set to 1, false otherwise
+     *
+     * @throws IndexOutOfBoundsException
+     */
+    public static boolean isSet(byte[] b, int offset, int len, int index) throws IndexOutOfBoundsException {
+        if((offset < 0) || (offset+len) > b.length){
+        	throw new IndexOutOfBoundsException("Invalid sub-array bounds - offset: " + offset + ", length: " + len + " for " + b.length + "-byte array.");
+        }
+        	
+    	int maxIndex = len * 8 - 1;
+        if ((index < 0) || (index > maxIndex)) {
+            throw new IndexOutOfBoundsException("Invalid bit index: " + index + " for " + b.length + "-byte array.");
+        }
+        int byteOffset = offset + len - (index / 8) - 1;
+        int bitOffset = index % 8;
+        byte mask = (byte) (0xFF & (1 << bitOffset));
+        return (b[byteOffset] & mask)!=0;
+    }
+    
+    public static boolean isSet(ByteBuffer b, int len, int index) throws IndexOutOfBoundsException {
+    	return isSet(b.array(), b.position(), len, index);
+    }
+
+    // TODO: setBit
+    
+    /**
+     * Extracts the given number of bits starting at the given bit index.
+     * The result is returned as a long value. Up to 64 bits can be extracted.
+     * The index is calculated from right to left - i.e. the least significant 
+     * bit is considered to be the rightmost (index = 0), while the most 
+     * significant bit is considered  to be the leftmost (index = b.length*8 -1)
+     * if the whole sub-array is treated as a series of consecutive bits.
+     * The portion of the array to be used is determined by the offset and 
+     * len values.
+     * 
+     * @param src the original byte array
+     * @param offset the array index the sub-array starts at
+     * @param len the number of bytes to use (starting at offset)
+     * @param startBit the index of the first bit to extract
+     * @param numOfBits the number of bits to extract
+     * 
+     * @return a long value representing the extracted bits
+     * 
+     * @throws IllegalArgumentException if the starting bit index is lower than 
+     *                                  0 or larger than the source byte arrays 
+     *                                  bit count. Also, if the number of bits
+     *                                  to extract is lower or equal to 0 or
+     *                                  when added to the starting index exceeds
+     *                                  the source byte array's bit count.
+     * 
+     */
+    public static long readSigned(byte[] src, int offset, int len, int startBit, int numOfBits)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+        
+        if (numOfBits > 64) {
+            throw new IllegalArgumentException("The number of bits cannot be "
+                    + "greater than 64. Given: " + numOfBits);
+        }
+        
+        byte[] bits = extract(src, offset, offset+len, startBit, numOfBits);
+        
+        long result = 0L;
+        
+        if(isSet(bits, numOfBits-1)){
+        	bits[0] = (byte) ((0xFF << 8 - numOfBits % 8) | bits[0]);
+            result = 0xFFFFFFFFFFFFFFFFL;
+        }
+
+        result = result & 0xFFFFFFFFFFFFFF00L | (long)bits[bits.length-1];        
+        
+        if(bits.length > 1){
+        	result = result & 0xFFFFFFFFFFFF00FFL | (long)(bits[bits.length-2] << 8);
+        }
+        
+        if(bits.length > 2){
+        	result = result & 0xFFFFFFFFFF00FFFFL | (long)(bits[bits.length-3] << 16);
+        }
+        
+        if(bits.length > 3){
+        	result = result & 0xFFFFFFFF00FFFFFFL | (long)(bits[bits.length-4] << 24);
+        }
+        
+        if(bits.length > 4){
+        	result = result & 0xFFFFFF00FFFFFFFFL | ((long)(bits[bits.length-5]) << 32);
+        }
+        
+        if(bits.length > 5){
+        	result = result & 0xFFFF00FFFFFFFFFFL | ((long)(bits[bits.length-6]) << 40);
+        }
+        
+        if(bits.length > 6){
+        	result = result & 0xFF00FFFFFFFFFFFFL | ((long)(bits[bits.length-7]) << 48);
+        }
+        
+        if(bits.length > 7){
+        	result = result & 0x00FFFFFFFFFFFFFFL | ((long)(bits[bits.length-8]) << 56);
+        }
+        
+        return result;
+    }
+    
+    public static long readSigned(byte[] src, int startBit, int numOfBits)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+    	return readSigned(src, 0, src.length, startBit, numOfBits);
+    }
+    
+    public static long readSigned(ByteBuffer src, int len, int startBit, int numOfBits)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+    	return readSigned(src.array(), src.position(), len, startBit, numOfBits);
+    }
+    
+		
+//    	long l1 = 0x00006f5e4d3c2b1aL;
+//    	byte[] b = {(byte)0x80, 0x71, 0x6f, 0x5e, 0x4d, 0x3c, 0x2b, 0x1a};
+//    	long l2 = readSigned(b, 0, 48);
+    
 }
