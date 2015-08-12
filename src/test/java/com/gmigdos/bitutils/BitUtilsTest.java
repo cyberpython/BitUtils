@@ -222,6 +222,26 @@ public class BitUtilsTest {
         byte[] b = new byte[1];
         BitUtils.unsetBit(b, -1);
     }
+    
+    @Test
+    public void testIsSet() {
+    	
+        byte[] b = new byte[]{0x17, 0x32, 0x5a, 0x21};
+        
+        assertTrue(BitUtils.isSet(b, 1, 2, 4));
+        assertFalse(BitUtils.isSet(b, 1, 2, 5));
+        assertTrue(BitUtils.isSet(b, 1, 2, 6));
+        assertFalse(BitUtils.isSet(b, 1, 2, 7));
+        
+        assertTrue(BitUtils.isSet(b, 0, 3, 16));
+        assertTrue(BitUtils.isSet(b, 0, 3, 17));
+        assertTrue(BitUtils.isSet(b, 0, 3, 18));
+        assertFalse(BitUtils.isSet(b, 0, 3, 19));
+        assertTrue(BitUtils.isSet(b, 0, 3, 20));
+        assertFalse(BitUtils.isSet(b, 0, 3, 21));
+        assertFalse(BitUtils.isSet(b, 0, 3, 22));
+        assertFalse(BitUtils.isSet(b, 0, 3, 23));
+    }
 
     /**
      * Test of extract method, of class BitUtils.
@@ -321,5 +341,78 @@ public class BitUtilsTest {
         byte[] expected = {(byte)0x99, (byte)0x43, (byte)0xBA};
         byte[] result = BitUtils.extract(b, 26, 12);
         assertArrayEquals(expected, result);
+    }
+    
+    /**
+     * Test of extract method, of class BitUtils.
+     */
+    @Test
+    public void testReadUnsigned() {
+        byte[] b = {(byte)0x31, (byte)0x6C, (byte)0x38};
+        long expResult = 0x316C;
+        long result = BitUtils.readUnsigned(b, 8, 16);
+        assertEquals(expResult, result);
+        
+        long expResult2 = 0x116C;
+        long result2 = BitUtils.readUnsigned(b, 8, 13);
+        assertEquals(expResult2, result2);
+        
+        long result3 = BitUtils.readUnsigned(b, 8, 15);
+        assertEquals(expResult, result3);
+        
+        long expResult4 = 0x030E;
+        long result4 = BitUtils.readUnsigned(b, 2, 10);
+        assertEquals(expResult4, result4);
+        
+        byte[] b2 = {(byte)0x99, (byte)0x43, (byte)0xBA};
+        
+        long expResult5 = 0x77;
+        long result5 = BitUtils.readUnsigned(b2, 3, 9);
+        assertEquals(expResult5, result5);
+        
+        long expResult6 = 0xEE;
+        long result6 = BitUtils.readUnsigned(b2, 2, 10);
+        assertEquals(expResult6, result6);
+        
+        long expResult7 = 0x9943;
+        long result7 = BitUtils.readUnsigned(b2, 8, 16);
+        assertEquals(expResult7, result7);
+        
+        long expResult8 = 0x03;
+        long result8 = BitUtils.readUnsigned(b2, 8, 4);
+        assertEquals(expResult8, result8);
+        
+        long expResult9 = 0x43;
+        long result9 = BitUtils.readUnsigned(b2, 8, 8);
+        assertEquals(expResult9, result9);
+        
+        long expResult10 = 0x0265;
+        long result10 = BitUtils.readUnsigned(b2, 14, 10);
+        assertEquals(expResult10, result10);
+        
+        long expResult11 = 0xBA;
+        long result11 = BitUtils.readUnsigned(b2, 0, 8);
+        assertEquals(expResult11, result11);
+        
+        long expResult12 = 0x03;
+        long result12 = BitUtils.readUnsigned(b2, 7, 2);
+        assertEquals(expResult12, result12);
+        
+        long expResult13 = 0x01;
+        long result13 = BitUtils.readUnsigned(b2, 7, 1);
+        assertEquals(expResult13, result13);
+        
+        long expResult14 = 0x9943BA;
+        long result14 = BitUtils.readUnsigned(b2, 0, 24);
+        assertEquals(expResult14, result14);
+        
+        long expResult15 = 0x16C3;
+        long result15 = BitUtils.readUnsigned(b, 4, 15);
+        assertEquals(expResult15, result15);
+        
+        
+        long expResult16 = 0x21;
+        long result16 = BitUtils.readUnsigned(b, 1, 2, 5, 6);
+        assertEquals(expResult16, result16);
     }
 }
