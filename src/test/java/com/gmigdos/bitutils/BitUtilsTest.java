@@ -415,4 +415,33 @@ public class BitUtilsTest {
         long result16 = BitUtils.readUnsigned(b, 1, 2, 5, 6);
         assertEquals(expResult16, result16);
     }
+
+    @Test
+    public void testReadSigned() {
+        byte[] b = {(byte) 0x2f, (byte) 0x6b, (byte) 0xaa, (byte) 0x80, (byte) 0x01, (byte) 0xeb, (byte) 0x20};
+
+        long expResult = -17;
+        long result = BitUtils.readSigned(b, 48, 6);
+        assertEquals(expResult, result);
+
+        expResult = 47;
+        result = BitUtils.readSigned(b, 48, 7);
+        assertEquals(expResult, result);
+
+        expResult = -38;
+        result = BitUtils.readSigned(b, 42, 9);
+        assertEquals(expResult, result);
+
+        expResult = 27562;
+        result = BitUtils.readSigned(b, 32, 16);
+        assertEquals(expResult, result);
+
+        expResult = -32767;
+        result = BitUtils.readSigned(b, 16, 16);
+        assertEquals(expResult, result);
+
+        expResult = -5344;
+        result = BitUtils.readSigned(b, 0, 16);
+        assertEquals(expResult, result);
+    }
 }
