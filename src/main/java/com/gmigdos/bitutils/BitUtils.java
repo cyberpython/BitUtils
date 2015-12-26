@@ -590,35 +590,12 @@ public class BitUtils {
         byte[] bits = extract(src, offset, offset+len, startBit, numOfBits);
 
         long result = 0L;
-        
-        result = result + (0x00000000000000FFL & bits[bits.length-1]);
-        
-        if(bits.length > 1){
-        	result = result + (0x000000000000FF00L &  (bits[bits.length-2] << 8));
-        }
-        
-        if(bits.length > 2){
-        	result = result + (0x0000000000FF0000L & (bits[bits.length-3] << 16));
-        }
-        
-        if(bits.length > 3){
-        	result = result + (0x00000000FF000000L & (bits[bits.length-4] << 24));
-        }
-        
-        if(bits.length > 4){
-        	result = result + (0x00000000FF000000L & (bits[bits.length-5] << 32));
-        }
-        
-        if(bits.length > 5){
-        	result = result + (0x00000000FF000000L & (bits[bits.length-6] << 40));
-        }
-        
-        if(bits.length > 6){
-        	result = result + (0x00000000FF000000L & (bits[bits.length-7] << 48));
-        }
-        
-        if(bits.length > 7){
-        	result = result + (0x00000000FF000000L & (bits[bits.length-8] << 56));
+
+        long mask =  0x00000000000000FFL;
+
+        for(int i=1; i <= bits.length; i++){
+            result = result + (mask &  (bits[bits.length-i] << (8*(i-1)) ));
+            mask = mask << 8;
         }
         
         return result;
@@ -708,45 +685,9 @@ public class BitUtils {
         }
         
         byte[] bits = extract(src, offset, offset+len, startBit, numOfBits);
-        
-        long result = 0L;
-        
-        if(isSet(bits, numOfBits-1)){
-        	bits[0] = (byte) ((0xFF << 8 - numOfBits % 8) | bits[0]);
-            result = 0xFFFFFFFFFFFFFFFFL;
-        }
 
-        result = result & 0xFFFFFFFFFFFFFF00L | (long)bits[bits.length-1];        
-        
-        if(bits.length > 1){
-        	result = result & 0xFFFFFFFFFFFF00FFL | (long)(bits[bits.length-2] << 8);
-        }
-        
-        if(bits.length > 2){
-        	result = result & 0xFFFFFFFFFF00FFFFL | (long)(bits[bits.length-3] << 16);
-        }
-        
-        if(bits.length > 3){
-        	result = result & 0xFFFFFFFF00FFFFFFL | (long)(bits[bits.length-4] << 24);
-        }
-        
-        if(bits.length > 4){
-        	result = result & 0xFFFFFF00FFFFFFFFL | ((long)(bits[bits.length-5]) << 32);
-        }
-        
-        if(bits.length > 5){
-        	result = result & 0xFFFF00FFFFFFFFFFL | ((long)(bits[bits.length-6]) << 40);
-        }
-        
-        if(bits.length > 6){
-        	result = result & 0xFF00FFFFFFFFFFFFL | ((long)(bits[bits.length-7]) << 48);
-        }
-        
-        if(bits.length > 7){
-        	result = result & 0x00FFFFFFFFFFFFFFL | ((long)(bits[bits.length-8]) << 56);
-        }
-        
-        return result;
+        return (toLong(bits) << (64 - numOfBits)) >> (64 - numOfBits);
+
     }
     
     public static long readSigned(byte[] src, int startBit, int numOfBits)
@@ -758,10 +699,5 @@ public class BitUtils {
             throws IllegalArgumentException, IndexOutOfBoundsException {
     	return readSigned(src.array(), src.position(), len, startBit, numOfBits);
     }
-    
-		
-//    	long l1 = 0x00006f5e4d3c2b1aL;
-//    	byte[] b = {(byte)0x80, 0x71, 0x6f, 0x5e, 0x4d, 0x3c, 0x2b, 0x1a};
-//    	long l2 = readSigned(b, 0, 48);
     
 }
